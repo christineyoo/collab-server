@@ -4,7 +4,6 @@ const path = require('path');
 const xss = require('xss');
 
 const groupsRouter = express.Router();
-const jsonParser = express.json();
 
 const serializeGroup = (group) => ({
   id: group.id,
