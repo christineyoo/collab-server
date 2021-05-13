@@ -7,11 +7,11 @@ const postsRouter = express.Router();
 const jsonParser = express.json();
 
 const serializePost = (post) => ({
-  id: note.id,
+  id: post.id,
   post_name: xss(post.post_name),
   content: xss(post.content),
-  group_id: note.folder_id,
-  modified: note.modified,
+  group_id: post.folder_id,
+  modified: post.modified,
   author: xss(post.author)
 });
 
