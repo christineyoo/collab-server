@@ -49,18 +49,49 @@ postsRouter
       .catch(next);
   });
 
-postsRouter.route('/:post_id').all((req, res, next) => {
-  PostsService.getById(req.app.get('db'), req.params.post_id)
-    .then((post) => {
-      if (!post) {
-        return res
-          .status(404)
-          .json({ error: { message: `Post doesn't exist` } });
-      }
-      res.post = post;
-      next();
-    })
-    .catch(next);
-});
+postsRouter
+  .route('/:post_id')
+  .all((req, res, next) => {
+    PostsService.getById(req.app.get('db'), req.params.post_id)
+      .then((post) => {
+        if (!post) {
+          return res
+            .status(404)
+            .json({ error: { message: `Post doesn't exist` } });
+        }
+        res.post = post;
+        next();
+      })
+      .catch(next);
+  })
+  .get((req, res, next) => {
+    res.json(serializePost(res.post));
+  })
+  .delete((req, res, next) => {
+    PostsService.deletePost(req.app.get('db'), req.params.post_id)
+      .then((numRowsAffected) => {
+        res.status(204).end();
+      })
+      .catch(next);
+  })
+  .patch(jsonParser, (req, res, next) => {
+    const { post_name, content, author, group_id, modified } = req.body;
+    const postToUpdate = { post_name, content, author, group_id, modified };
+
+    const numberOfValues = Object.values(postToUpdate).filter(Boolean).length;
+    if (numberOfValues === 0)
+      return res.status(400).json({
+        error: {
+          message: `Request body must contain either 'post_name', 'content', 'author', 'group_id', or 'modified'`
+        }
+      });
+
+    PostsService.updatePost(req.app.get('db'), req.params.post_id, postToUpdate)
+      .then((numRowsAffected) => {
+        res.json({ message: `Succesfully updated ` });
+        res.status(204).end();
+      })
+      .catch(next);
+  });
 
 module.exports = postsRouter;
