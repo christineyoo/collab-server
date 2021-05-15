@@ -70,6 +70,7 @@ postsRouter
   .delete((req, res, next) => {
     PostsService.deletePost(req.app.get('db'), req.params.post_id)
       .then((numRowsAffected) => {
+        res.json({ message: `Succesfully deleted` });
         res.status(204).end();
       })
       .catch(next);
