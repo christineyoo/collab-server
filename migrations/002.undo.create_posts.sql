@@ -1,4 +1,4 @@
 alter table groups
     drop column id;
 
-drop table if exists notes;
+drop table if exists posts;

@@ -4,8 +4,9 @@ const morgan = require('morgan');
 const cors = require('cors');
 const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
-const postsRouter = require('./posts/posts-router');
 const groupsRouter = require('./groups/groups-router');
+const postsRouter = require('./posts/posts-router');
+const commentsRouter = require('./comments/comments-router');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(cors());
 
 app.use('/api/groups', groupsRouter);
 app.use('/api/posts', postsRouter);
+app.use('/api/comments', commentsRouter);
 
 app.get('/', (req, res) => {
   res.send('Hello, world!');
