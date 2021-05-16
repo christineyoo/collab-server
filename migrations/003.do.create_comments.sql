@@ -5,6 +5,6 @@ create table comments (
     author text not null
 );
 
-alter table posts
+alter table comments
     add column
         post_id integer references posts(id) on delete cascade not null;

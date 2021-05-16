@@ -1,6 +1,6 @@
 const CommentsService = {
   getAllComments(knex) {
-    return knex.select('*').from('posts');
+    return knex.select('*').from('comments');
   },
   insertComment(knex, newComment) {
     return knex
