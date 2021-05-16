@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const CommentsService = require('./comments-service');
 const xss = require('xss');
-const PostsService = require('../posts/posts-service');
 
 const commentsRouter = express.Router();
 const jsonParser = express.json();
@@ -18,7 +17,7 @@ const serializeComment = (comment) => ({
 commentsRouter
   .route('/')
   .get((req, res, next) => {
-    PostsService.getAllComments(req.app.get('db'))
+    CommentsService.getAllComments(req.app.get('db'))
       .then((comments) => {
         res.json(comments.map(serializePost));
       })
