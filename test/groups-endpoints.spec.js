@@ -2,6 +2,7 @@ const { expect } = require('chai');
 const knex = require('knex');
 const supertest = require('supertest');
 const app = require('../src/app');
+const { makeGroupsArray } = require('./groups.fixtures');
 
 describe('Groups Endpoints', function () {
   let db;
@@ -15,18 +16,26 @@ describe('Groups Endpoints', function () {
 
   after('disconnect from db', () => db.destroy());
 
-  before('clean the table', () =>
-    db.raw('TRUNCATE groups RESTART IDENTITY CASCADE')
-  );
+  before('clean the table', () => db('groups').truncate());
 
-  afterEach('cleanup', () =>
-    db.raw('TRUNCATE groups RESTART IDENTITY CASCADE')
-  );
+  afterEach('cleanup', () => db('groups').truncate());
 
   describe(`GET /api/groups`, () => {
-    context(`Given no articles`, () => {
+    context(`Given no groups`, () => {
       it(`reponds with 200 and an empty list`, () => {
         return supertest(app).get('/api/groups').expect(200, []);
+      });
+    });
+
+    context('Given there are groups in the database', () => {
+      const testGroups = makeGroupsArray();
+
+      beforeEach('Insert groups', () => {
+        return db.into('groups').insert(testGroups);
+      });
+
+      it('GET /api/groups responds with 200 and all the groups', () => {
+        return supertest(app).get('/api/groups').expect(200, testGroups);
       });
     });
   });
