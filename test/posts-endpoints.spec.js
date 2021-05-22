@@ -28,6 +28,7 @@ describe('Posts endpoints', function () {
     db.raw('TRUNCATE groups, posts, comments RESTART IDENTITY CASCADE')
   );
 
+  //   get all
   describe('GET /api/posts', () => {
     context('Given no posts', () => {
       it('responds with 200 and an empty list', () => {
@@ -56,6 +57,7 @@ describe('Posts endpoints', function () {
     });
   });
 
+  //   get by id
   describe('GET /api/posts/:post_id', () => {
     context('Given no posts', () => {
       it('responds with 404', () => {
@@ -87,6 +89,110 @@ describe('Posts endpoints', function () {
         return supertest(app)
           .get(`/api/posts/${postId}`)
           .expect(200, expectedPost);
+      });
+    });
+  });
+
+  //   post
+  describe('POST /api/posts', () => {
+    const testGroups = makeGroupsArray();
+    const testPosts = makePostsArray();
+    beforeEach('Insert posts', () => {
+      return db
+        .into('groups')
+        .insert(testGroups)
+        .then(() => {
+          return db.into('posts').insert(testPosts);
+        });
+    });
+    it('creates a post responding with 201 and the new post', () => {
+      const newPost = {
+        author: 'Author four',
+        content: 'Content for post four',
+        group_id: 3,
+        modified: '2021-05-20T00:00:00.000Z',
+        post_name: 'Post four'
+      };
+      return supertest(app)
+        .post('/api/posts')
+        .send(newPost)
+        .expect(201)
+        .expect((res) => {
+          expect(res.body.author.to.eql(newPost.author));
+          expect(res.body.content.to.eql(newPost.content));
+          expect(res.body.group_id.to.eql(newPost.group_id));
+          expect(res.body.modified.to.eql(newPost.modified));
+          expect(res.body.post_name.to.eql(newPost.post_name));
+          expect(res.body).to.have.property('id');
+          expect(res.headers.location).to.eql(`/api/posts/${res.body.id}`);
+        })
+        .then((res) =>
+          supertest(app).get(`/api/posts/${res.body.id}`).expect(res.body)
+        );
+    });
+  });
+
+  // delete
+  describe('DELETE /api/posts/:post_id', () => {
+    context('Given there are posts in the database', () => {
+      const testGroups = makeGroupsArray();
+      const testPosts = makePostsArray();
+      beforeEach('Insert posts', () => {
+        return db
+          .into('groups')
+          .insert(testGroups)
+          .then(() => {
+            return db.into('posts').insert(testPosts);
+          });
+      });
+      it('responds with 200 and removes the post', () => {
+        const idToRemove = 2;
+        const expectedPosts = testPosts.filter(
+          (post) => post.id !== idToRemove
+        );
+        return supertest(app)
+          .delete(`/api/posts/${idToRemove}`)
+          .expect(200)
+          .then((res) =>
+            supertest(app).get('/api/posts').expect(expectedPosts)
+          );
+      });
+    });
+  });
+
+  //   update
+  describe('PATCH /api/posts/:post_id', () => {
+    context('Given there are posts in the database', () => {
+      const testGroups = makeGroupsArray();
+      const testPosts = makePostsArray();
+      beforeEach('Insert posts', () => {
+        return db
+          .into('groups')
+          .insert(testGroups)
+          .then(() => {
+            return db.into('posts').insert(testPosts);
+          });
+      });
+      it('responds with 200 and updates the post', () => {
+        const idToUpdate = 2;
+        const updatePost = {
+          post_name: 'Updated name',
+          content: 'Updated content',
+          author: 'Updated author',
+          group_id: 1,
+          modified: '2021-05-21T00:00:00.000Z'
+        };
+        const expectedPost = {
+          ...testPosts[idToUpdate - 1],
+          ...updatePost
+        };
+        return supertest(app)
+          .patch(`/api/posts/${idToUpdate}`)
+          .send(updatePost)
+          .expect(200)
+          .then((res) =>
+            supertest(app).get(`/api/posts/${idToUpdate}`).expect(expectedPost)
+          );
       });
     });
   });

@@ -5,5 +5,6 @@ module.exports = {
     globals: {
     supertest: true,
     expect: true
-  }
+  },
+  parser: "babel-eslint"
 };
