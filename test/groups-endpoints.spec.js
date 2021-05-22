@@ -4,7 +4,7 @@ const supertest = require('supertest');
 const app = require('../src/app');
 const { makeGroupsArray } = require('./collab.fixtures');
 
-describe('Groups Endpoints', function () {
+describe('Groups endpoints', function () {
   let db;
   before('make knex instance', () => {
     db = knex({
@@ -16,13 +16,17 @@ describe('Groups Endpoints', function () {
 
   after('disconnect from db', () => db.destroy());
 
-  before('clean the table', () => db('groups').truncate());
+  before('clean the table', () =>
+    db.raw('TRUNCATE groups, posts RESTART IDENTITY CASCADE')
+  );
 
-  afterEach('cleanup', () => db('groups').truncate());
+  afterEach('cleanup', () =>
+    db.raw('TRUNCATE groups, posts RESTART IDENTITY CASCADE')
+  );
 
-  describe(`GET /api/groups`, () => {
-    context(`Given no groups`, () => {
-      it(`reponds with 200 and an empty list`, () => {
+  describe('GET /api/groups', () => {
+    context('Given no groups', () => {
+      it('reponds with 200 and an empty list', () => {
         return supertest(app).get('/api/groups').expect(200, []);
       });
     });

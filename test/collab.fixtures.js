@@ -18,33 +18,60 @@ function makeGroupsArray() {
 function makePostsArray() {
   return [
     {
-      id: 1,
-      post_name: 'Post one',
-      content: 'Content for post one',
-      modified: '2021-05-20 23:21:26.392487+00',
       author: 'Author one',
-      group_id: '1'
+      content: 'Content for post one',
+      group_id: 1,
+      id: 1,
+      modified: '2021-05-20T00:00:00.000Z',
+      post_name: 'Post one'
     },
     {
-      id: 2,
-      post_name: 'Post two',
-      content: 'Content for post two',
-      modified: '2021-05-20 23:21:26.392487+00',
       author: 'Author two',
-      group_id: '2'
+      content: 'Content for post two',
+      group_id: 2,
+      id: 2,
+      modified: '2021-05-20T00:00:00.000Z',
+      post_name: 'Post two'
     },
     {
-      id: 3,
-      post_name: 'Post three',
-      content: 'Content for post three',
-      modified: '2021-05-20 23:21:26.392487+00',
       author: 'Author three',
-      group_id: '3'
+      content: 'Content for post three',
+      group_id: 3,
+      id: 3,
+      modified: '2021-05-20T00:00:00.000Z',
+      post_name: 'Post three'
+    }
+  ];
+}
+
+function makeCommentsArray() {
+  return [
+    {
+      author: 'Author 1',
+      content: 'Content for comment 1',
+      id: 1,
+      modified: '2021-05-20T00:00:00.000Z',
+      post_id: 1
+    },
+    {
+      author: 'Author 2',
+      content: 'Content for comment 2',
+      id: 2,
+      modified: '2021-05-20T00:00:00.000Z',
+      post_id: 2
+    },
+    {
+      author: 'Author 3',
+      content: 'Content for comment 3',
+      id: 3,
+      modified: '2021-05-20T00:00:00.000Z',
+      post_id: 3
     }
   ];
 }
 
 module.exports = {
   makeGroupsArray,
-  makePostsArray
+  makePostsArray,
+  makeCommentsArray
 };
