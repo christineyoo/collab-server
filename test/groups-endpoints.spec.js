@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const knex = require('knex');
 const supertest = require('supertest');
 const app = require('../src/app');
-const { makeGroupsArray } = require('./groups.fixtures');
+const { makeGroupsArray } = require('./collab.fixtures');
 
 describe('Groups Endpoints', function () {
   let db;
