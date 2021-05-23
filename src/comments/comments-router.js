@@ -21,7 +21,10 @@ commentsRouter
       .then((comments) => {
         res.json(comments.map(serializeComment));
       })
-      .catch(next);
+      .catch((err) => {
+        console.log(err);
+        next();
+      });
   })
   .post(jsonParser, (req, res, next) => {
     const { content, author, modified, post_id } = req.body;
@@ -44,7 +47,10 @@ commentsRouter
           .location(path.posix.join(req.originalUrl, `/${comment.id}`))
           .json(serializeComment(comment));
       })
-      .catch(next);
+      .catch((err) => {
+        console.log(err);
+        next();
+      });
   });
 
 commentsRouter
@@ -60,7 +66,10 @@ commentsRouter
         res.comment = comment;
         next();
       })
-      .catch(next);
+      .catch((err) => {
+        console.log(err);
+        next();
+      });
   })
   .get((req, res, next) => {
     res.json(serializeComment(res.comment));
@@ -71,7 +80,10 @@ commentsRouter
         res.json({ message: `Succesfully deleted` });
         res.status(204).end();
       })
-      .catch(next);
+      .catch((err) => {
+        console.log(err);
+        next();
+      });
   });
 
 module.exports = commentsRouter;

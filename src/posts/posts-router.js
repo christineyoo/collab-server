@@ -23,7 +23,11 @@ postsRouter
       .then((posts) => {
         res.json(posts.map(serializePost));
       })
-      .catch(next);
+      .catch((err) => {
+        // helps with logging errors rather than generic 500 status
+        console.log({ err });
+        next();
+      });
   })
   .post(jsonParser, (req, res, next) => {
     const { post_name, content, group_id, author, modified } = req.body;
@@ -41,12 +45,15 @@ postsRouter
 
     PostsService.insertPost(req.app.get('db'), newPost)
       .then((post) => {
-        res
+        return res
           .status(201)
           .location(path.posix.join(req.originalUrl, `/${post.id}`))
           .json(serializePost(post));
       })
-      .catch(next);
+      .catch((err) => {
+        console.log({ err });
+        next();
+      });
   });
 
 postsRouter
@@ -62,7 +69,10 @@ postsRouter
         res.post = post;
         next();
       })
-      .catch(next);
+      .catch((err) => {
+        console.log({ err });
+        next();
+      });
   })
   .get((req, res, next) => {
     res.json(serializePost(res.post));
@@ -73,7 +83,10 @@ postsRouter
         res.json({ message: `Succesfully deleted` });
         res.status(204).end();
       })
-      .catch(next);
+      .catch((err) => {
+        console.log({ err });
+        next();
+      });
   })
   .patch(jsonParser, (req, res, next) => {
     const { post_name, content, author, group_id, modified } = req.body;
@@ -92,7 +105,10 @@ postsRouter
         res.json({ message: `Succesfully updated ` });
         res.status(204).end();
       })
-      .catch(next);
+      .catch((err) => {
+        console.log({ err });
+        next();
+      });
   });
 
 module.exports = postsRouter;

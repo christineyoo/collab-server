@@ -2,11 +2,7 @@ const { expect } = require('chai');
 const knex = require('knex');
 const supertest = require('supertest');
 const app = require('../src/app');
-const {
-  makePostsArray,
-  makeGroupsArray,
-  makeCommentsArray
-} = require('./collab.fixtures');
+const { makePostsArray, makeGroupsArray } = require('./collab.fixtures');
 
 describe('Posts endpoints', function () {
   let db;
@@ -21,11 +17,11 @@ describe('Posts endpoints', function () {
   after('disconnect from db', () => db.destroy());
 
   before('clean the table', () =>
-    db.raw('TRUNCATE groups, posts, comments RESTART IDENTITY CASCADE')
+    db.raw('TRUNCATE groups, posts RESTART IDENTITY CASCADE')
   );
 
   afterEach('cleanup', () =>
-    db.raw('TRUNCATE groups, posts, comments RESTART IDENTITY CASCADE')
+    db.raw('TRUNCATE groups, posts RESTART IDENTITY CASCADE')
   );
 
   //   get all
@@ -39,16 +35,12 @@ describe('Posts endpoints', function () {
     context('Given there are posts in the database', () => {
       const testGroups = makeGroupsArray();
       const testPosts = makePostsArray();
-      const testComments = makeCommentsArray();
       beforeEach('Insert posts', () => {
         return db
           .into('groups')
           .insert(testGroups)
           .then(() => {
             return db.into('posts').insert(testPosts);
-          })
-          .then(() => {
-            return db.into('comments').insert(testComments);
           });
       });
       it('GET /api/posts responds with 200 and all the posts', () => {
@@ -71,16 +63,12 @@ describe('Posts endpoints', function () {
     context('Given there are posts in the database', () => {
       const testGroups = makeGroupsArray();
       const testPosts = makePostsArray();
-      const testComments = makeCommentsArray();
       beforeEach('Insert posts', () => {
         return db
           .into('groups')
           .insert(testGroups)
           .then(() => {
             return db.into('posts').insert(testPosts);
-          })
-          .then(() => {
-            return db.into('comments').insert(testComments);
           });
       });
       it('responds with 200 and the specified post', () => {
@@ -96,21 +84,15 @@ describe('Posts endpoints', function () {
   //   post
   describe('POST /api/posts', () => {
     const testGroups = makeGroupsArray();
-    const testPosts = makePostsArray();
-    beforeEach('Insert posts', () => {
-      return db
-        .into('groups')
-        .insert(testGroups)
-        .then(() => {
-          return db.into('posts').insert(testPosts);
-        });
+    beforeEach('Insert groups', () => {
+      return db.into('groups').insert(testGroups);
     });
     it('creates a post responding with 201 and the new post', () => {
       const newPost = {
         author: 'Author four',
         content: 'Content for post four',
         group_id: 3,
-        modified: '2021-05-20T00:00:00.000Z',
+        modified: '2021-05-25T00:00:00.000Z',
         post_name: 'Post four'
       };
       return supertest(app)
@@ -118,11 +100,11 @@ describe('Posts endpoints', function () {
         .send(newPost)
         .expect(201)
         .expect((res) => {
-          expect(res.body.author.to.eql(newPost.author));
-          expect(res.body.content.to.eql(newPost.content));
-          expect(res.body.group_id.to.eql(newPost.group_id));
-          expect(res.body.modified.to.eql(newPost.modified));
-          expect(res.body.post_name.to.eql(newPost.post_name));
+          expect(res.body.author).to.eql(newPost.author);
+          expect(res.body.content).to.eql(newPost.content);
+          expect(res.body.group_id).to.eql(newPost.group_id);
+          expect(res.body.modified).to.eql(newPost.modified);
+          expect(res.body.post_name).to.eql(newPost.post_name);
           expect(res.body).to.have.property('id');
           expect(res.headers.location).to.eql(`/api/posts/${res.body.id}`);
         })
