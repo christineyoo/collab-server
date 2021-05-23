@@ -20,9 +20,9 @@ app.use('/api/groups', groupsRouter);
 app.use('/api/posts', postsRouter);
 app.use('/api/comments', commentsRouter);
 
-app.get('/', (req, res) => {
-  res.send('Hello, world!');
-});
+// app.get('/', (req, res) => {
+//   res.send('Hello, world!');
+// });
 
 app.use(function errorHandler(error, req, res, next) {
   let response;
