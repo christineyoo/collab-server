@@ -96,7 +96,7 @@ This is the server-side code for the groups, posts, and comments of the [client-
 }
 ```
 
-### POST `/api/comments/`
+### POST `/api/comments`
 ```
 // req.body
 {
