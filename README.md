@@ -1,34 +1,30 @@
-# express-boilerplate
+# Collab-Server
+## Description
+This is the server-side code for the groups, posts, and comments of the [client-side Collab app](https://collab-app-smoky.vercel.app/)
+- [GitHub Repo for Collab (client-side)](https://github.com/christineyoo/collab-app)
 
-This is boilerplate code for creating an Express application
+## Features
+### Groups table
+- The `groups` table stores the data about the courses (or groups), "Integrated Math 1", "Integrated Math 2", "Integrated Math 3", and "Introduction to Data Science."
+- [Click here see the 'groups' data](https://christine-collab.herokuapp.com/api/groups)
 
-This is a boilerplate project that
-- installs dependencies
-- installs middleware appropriate for any API project
-- adds basic configuration management
-- configures testing libraries
-- creates NPM scripts for running, developing, testing, and deploying
-- creates a "Hello, world!" endpoint so we can verify that the boilerplate setup worked.
+### Posts table
+- The `posts` table stores the data about each post. Each post has an id, post name, content, author, group id, and date. Each post references a group.
+- [Click here see the 'posts' data](https://christine-collab.herokuapp.com/api/posts)
 
-## Set up
 
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
+### Comments table
+- The `comments` table stores the data about each comment. Each comment has an id, content, author, post id, and date. Each comment references a post.
+- [Click here see the 'comments' data](https://christine-collab.herokuapp.com/api/comments)
 
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
+#### ER Diagram
+![image](https://user-images.githubusercontent.com/76637034/119249338-9cf2d280-bb4c-11eb-8715-4ec6b00fa9d0.png)
 
-## Scripts
-
-Start the application `npm start`
-
-Start nodemon for the application `npm run dev`
-
-Run the tests `npm test`
-
-## Deploying
-
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's main branch.
+## Technologies used
+- Node.js
+- Express, Express Router
+- Knex
+- SQL
+- PostgreSQL
+- Testing with Mocha, Chai, and Supertest
+- Heroku
