@@ -18,7 +18,7 @@ const serializePost = (post) => ({
 postsRouter
   .route('/')
   .get((req, res, next) => {
-    const knexInstance = req.app.get('db');
+    const knexInstance = req.app.get('db');   
     PostsService.getAllPosts(knexInstance)
       .then((posts) => {
         res.json(posts.map(serializePost));
