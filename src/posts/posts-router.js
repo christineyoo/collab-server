@@ -30,6 +30,7 @@ postsRouter
       });
   })
   .post(jsonParser, (req, res, next) => {
+    const knexInstance = req.app.get('db');
     const { post_name, content, group_id, author, modified } = req.body;
     const newPost = { post_name, content, group_id, author };
 
@@ -43,7 +44,7 @@ postsRouter
 
     newPost.modified = modified;
 
-    PostsService.insertPost(req.app.get('db'), newPost)
+    PostsService.insertPost(knexInstance, newPost)
       .then((post) => {
         return res
           .status(201)
@@ -59,7 +60,8 @@ postsRouter
 postsRouter
   .route('/:post_id')
   .all((req, res, next) => {
-    PostsService.getById(req.app.get('db'), req.params.post_id)
+    const knexInstance = req.app.get('db');
+    PostsService.getById(knexInstance, req.params.post_id)
       .then((post) => {
         if (!post) {
           return res
@@ -78,7 +80,8 @@ postsRouter
     res.json(serializePost(res.post));
   })
   .delete((req, res, next) => {
-    PostsService.deletePost(req.app.get('db'), req.params.post_id)
+    const knexInstance = req.app.get('db');
+    PostsService.deletePost(knexInstance, req.params.post_id)
       .then((numRowsAffected) => {
         res.json({ message: `Succesfully deleted` });
         res.status(204).end();
@@ -89,6 +92,7 @@ postsRouter
       });
   })
   .patch(jsonParser, (req, res, next) => {
+    const knexInstance = req.app.get('db');
     const { post_name, content, author, group_id, modified } = req.body;
     const postToUpdate = { post_name, content, author, group_id, modified };
 
@@ -100,7 +104,7 @@ postsRouter
         }
       });
 
-    PostsService.updatePost(req.app.get('db'), req.params.post_id, postToUpdate)
+    PostsService.updatePost(knexInstance, req.params.post_id, postToUpdate)
       .then((numRowsAffected) => {
         res.json({ message: `Succesfully updated ` });
         res.status(204).end();
